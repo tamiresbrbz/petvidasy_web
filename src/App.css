@@ -1,38 +1,173 @@
-.App {
-  text-align: center;
+body {
+    font-family: Arial, sans-serif;
+    color: aliceblue;
+    margin: 0;
+    padding: 0;
+    background-image: url('./img/background1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Cabeçalho */
+header {
+    background-color: #590303;
+    color: white;
+    padding: 0.2em;
+    text-align: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Navegação */
+nav {
+    background-color: #590303;
+    padding: 0.5em;
+    display: flex;
+    justify-content: space-around;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* Botões gerais */
+button {
+    padding: 0.7em 1.2em;
+    margin: 0.5em;
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #29aea5;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
-.App-link {
-  color: #61dafb;
+button:hover {
+    background-color: #6e8787;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+button:active {
+    transform: scale(0.97);
+}
+
+/* Botão submit */
+button[type="submit"] {
+    margin-top: 1.5em;
+}
+
+/* Formulário */
+main {
+    padding: 2em;
+}
+
+form, section {
+    max-width: 500px;
+    margin: 2em auto;
+    padding: 1em 2em;
+    background-color: #0D0000;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+fieldset {
+    border: none;
+    margin-bottom: 1.5em;
+}
+
+legend {
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    font-size: 1.2em;
+}
+
+label {
+    display: block;
+    margin-top: 1em;
+    margin-bottom: 0.3em;
+    font-weight: 500;
+}
+
+input, select {
+    width: 100%;
+    padding: 0.6em;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Relatórios */
+.relatorio {
+    margin: 2em auto;
+    max-width: 950px;
+    background-color: rgba(13, 0, 0, 0.67);
+    padding: 1.5em;
+    border-radius: 10px;
+    color: white;
+}
+
+.botoes-relatorios {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    flex-wrap: wrap;
+    margin-bottom: 1em;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5em;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 0.6em;
+    text-align: left;
+}
+
+th {
+    background-color: #29aea5;
+    color: white;
+}
+
+/* Página inicial */
+.home-container {
+    text-align: center;
+    margin: 3em auto 0 auto;
+    padding: 2em;
+    background-color: rgba(13, 0, 0, 0.67);
+    border-radius: 10px;
+    max-width: 700px;
+    color: white;
+}
+
+.home-container h2 {
+    font-size: 2em;
+    margin-bottom: 0.5em;
+}
+
+.home-container p {
+    font-size: 1.2em;
+    margin-bottom: 1.5em;
+}
+
+/* Atalhos */
+.atalhos {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
+.atalhos a button {
+    background-color: #29aea5;
+    border: none;
+    padding: 0.8em 1.5em;
+    font-size: 1em;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.atalhos a button:hover {
+    background-color: #6e8787;
 }
