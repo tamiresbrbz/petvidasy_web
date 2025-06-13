@@ -15,6 +15,7 @@ export default function CadastroServicosProdutos() {
     name: "",
     description: "",
     price: "",
+    cost: "",
     stock: "",
     minStock: "",
     barcode: "",
@@ -53,6 +54,7 @@ export default function CadastroServicosProdutos() {
       await axios.post("http://localhost:8080/api/products", {
         ...product,
         price: parseFloat(product.price),
+        cost: parseFloat(product.cost),
         stock: parseInt(product.stock),
         minStock: parseInt(product.minStock),
       });
@@ -67,7 +69,7 @@ export default function CadastroServicosProdutos() {
     <div>
         <header>
             <h1>Cadastro de Serviços e Produtos</h1>
-            <p>Utilize os formulários abaixo para cadastrar novos tipos de serviços e produtos.</p>
+            <p>Utilize os formulários abaixo para cadastrar novos tipos de serviços ou produtos.</p>
             <Menu />
         </header>
       
@@ -90,11 +92,10 @@ export default function CadastroServicosProdutos() {
       <form onSubmit={cadastrarProduto}>
         <h2>Cadastro de Produto</h2>
         <input name="name" placeholder="Nome" onChange={handleProductChange} required />
-        <input name="description" placeholder="Descrição" onChange={handleProductChange} required />
         <input name="price" placeholder="Preço" type="number" onChange={handleProductChange} required />
+        <input name="cost" placeholder="Custo" type="number" onChange={handleProductChange} required />
         <input name="stock" placeholder="Estoque" type="number" onChange={handleProductChange} required />
         <input name="minStock" placeholder="Estoque mínimo" type="number" onChange={handleProductChange} required />
-        <input name="barcode" placeholder="Código de barras" onChange={handleProductChange} required />
         <input name="categoryId" placeholder="ID da categoria" type="number" onChange={handleProductChange} required />
         <label>
           Ativo?

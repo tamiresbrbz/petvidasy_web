@@ -14,8 +14,17 @@ export default function Agendamentos() {
   const [datetime, setDatetime] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [serviceTypes, setServiceTypes] = useState([]);
+
 
   useEffect(() => {
+    axios.get("http://localhost:8080/api/service-types")
+    .then((res) => {
+      const lista = res.data._embedded?.customResourceList || [];
+      setServiceTypes(lista.map(item => item.content || item));
+      })
+    .catch((err) => console.error("Erro ao buscar tipos de serviço:", err));
+
     axios.get("http://localhost:8080/api/customers")
       .then((res) => {
         const lista = res.data._embedded?.customResourceList || [];
@@ -108,13 +117,20 @@ export default function Agendamentos() {
           ))}
         </select>
 
-        <label>ID do Tipo de Serviço:</label>
-        <input
-          className="form-control"
-          type="number"
+        <label>Tipo de Serviço:</label>
+        <select
+          className="form-select"
           value={serviceTypeId}
           onChange={(e) => setServiceTypeId(e.target.value)}
-        />
+        >
+          <option value="">Selecione um tipo de serviço</option>
+          {serviceTypes.map((type) => (
+            <option key={type.id} value={type.id}>
+              {type.name}
+            </option>
+          ))}
+        </select>
+
 
         <label>Data e Hora:</label>
         <input

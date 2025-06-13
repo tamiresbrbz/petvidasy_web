@@ -20,25 +20,27 @@ export default function Funcionarios() {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Enviando funcionário:", formData);
-    axios.post('http://localhost:8080/api/employees', formData)
-      .then(response => {
-        alert('Funcionário cadastrado com sucesso!');
-        console.log(response.data);
-        setFormData({
-          username: '',
-          password: '',
-          email: '',
-          role: 'ADMIN',
-          isActive: true
-        }); // limpa formulário
-      })
-      .catch(error => {
-        console.error('Erro ao cadastrar funcionário:', error);
-        alert('Erro ao cadastrar funcionário. Verifique os dados e tente novamente.');
+  e.preventDefault();
+  console.log("Enviando funcionário:", formData);
+
+  axios.post('http://localhost:8080/api/employees', formData)
+    .then(response => {
+      alert('Funcionário cadastrado com sucesso!');
+      console.log(response.data);
+      setFormData({
+        username: '',
+        password: '',
+        email: '',
+        role: 'ADMIN',
+        isActive: true
       });
-  };
+    })
+    .catch(error => {
+      console.error('Erro ao cadastrar funcionário:', error);
+      alert('Erro ao cadastrar funcionário. Verifique os dados e tente novamente.');
+    });
+};
+
 
   return (
     <div>
@@ -89,7 +91,6 @@ export default function Funcionarios() {
             required
           >
             <option value="ADMIN">Admin</option>
-            <option value="EMPLOYEE">Funcionário</option>
           </select>
         </div>
 

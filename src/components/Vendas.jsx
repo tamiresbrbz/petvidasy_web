@@ -1,200 +1,227 @@
-// Tela de Vendas atualizada com desconto, remoção de itens e melhoria nos controles
-import { useState, useEffect } from "react";
-import Menu from './Menu';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Menu from "./Menu";
 
-export default function TelaVendas() {
-  const [clientes, setClientes] = useState([]);
-  const [produtos, setProdutos] = useState([]);
-  const [clienteId, setClienteId] = useState("");
-  const [produtoId, setProdutoId] = useState("");
-  const [quantidade, setQuantidade] = useState(1);
-  const [itens, setItens] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [mensagem, setMensagem] = useState("");
-  const [observacao, setObservacao] = useState("");
-  const [metodoPagamento, setMetodoPagamento] = useState("CREDIT_CARD");
-  const [desconto, setDesconto] = useState(0);
+export default function Vendas() {
+  const [customers, setCustomers] = useState([]);
+  const [products, setProducts] = useState([]);
+
+  const [selectedCustomer, setSelectedCustomer] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [items, setItems] = useState([]);
+  const [discount, setDiscount] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState("Cartão de Crédito");
+  const [observation, setObservation] = useState("");
+
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const carregarDados = async () => {
-      try {
-        const clientesRes = await fetch("http://localhost:8080/customers");
-        const produtosRes = await fetch("http://localhost:8080/products");
-        if (!clientesRes.ok || !produtosRes.ok) throw new Error("Erro ao carregar dados");
+    axios
+      .get("http://localhost:8080/api/customers")
+      .then((res) => {
+        const lista = res.data._embedded?.customResourceList || [];
+        setCustomers(lista.map((item) => item.content || item));
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar clientes:", err);
+        setError("Erro ao carregar dados de clientes.");
+      });
 
-        const clientesData = await clientesRes.json();
-        const produtosData = await produtosRes.json();
-        setClientes(clientesData);
-        setProdutos(produtosData);
-      } catch (e) {
-        setMensagem("❌ Erro ao carregar dados. Verifique o servidor.");
-      }
-    };
-    carregarDados();
+    axios
+      .get("http://localhost:8080/api/products")
+      .then((res) => {
+        const lista = res.data._embedded?.customResourceList || [];
+        setProducts(lista.map((item) => item.content || item));
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar produtos:", err);
+        setError("Erro ao carregar dados de produtos.");
+      });
   }, []);
 
-  useEffect(() => {
-    const totalBruto = itens.reduce((soma, item) => soma + item.subtotal, 0);
-    const totalComDesconto = totalBruto - parseFloat(desconto || 0);
-    setTotal(totalComDesconto >= 0 ? totalComDesconto : 0);
-  }, [itens, desconto]);
-
   const adicionarProduto = () => {
-    const produto = produtos.find((p) => p.id === parseInt(produtoId));
-    if (!produto || quantidade < 1) return;
-
-    const existente = itens.find(item => item.produtoId === produto.id);
-    if (existente) {
-      const novosItens = itens.map(item =>
-        item.produtoId === produto.id
-          ? { ...item, quantidade: item.quantidade + quantidade, subtotal: (item.quantidade + quantidade) * item.unitPrice }
-          : item
-      );
-      setItens(novosItens);
-    } else {
-      const subtotal = produto.price * quantidade;
-      setItens(prev => [...prev, {
-        produtoId: produto.id,
-        quantidade,
-        unitPrice: produto.price,
-        subtotal,
-        nome: produto.name
-      }]);
+    const produto = products.find((p) => String(p.id) === selectedProduct);
+    if (!produto || quantity <= 0) {
+      setError("Produto inválido ou quantidade inválida.");
+      return;
     }
-    setQuantidade(1);
-    setProdutoId("");
+
+    const novoItem = {
+      productId: produto.id,
+      quantity: parseInt(quantity),
+      price: produto.price || 0,
+    };
+
+    setItems([...items, novoItem]);
+    setSelectedProduct("");
+    setQuantity(1);
+    setError("");
   };
 
-  const removerItem = (produtoId) => {
-    setItens(prev => prev.filter(item => item.produtoId !== produtoId));
-  };
+  function mapearMetodoPagamento(metodo) {
+    switch (metodo) {
+      case "Cartão de Crédito":
+        return "CREDIT_CARD";
+      case "Cartão de Débito":
+        return "DEBIT_CARD";
+      case "Dinheiro":
+        return "CASH";
+      default:
+        return "CASH";
+    }
+  }
 
-  const finalizarVenda = async (e) => {
-    e.preventDefault();
-    setMensagem("");
+  const totalBruto = items.reduce(
+    (acc, item) => acc + (item.price || 0) * (item.quantity || 0),
+    0
+  );
+  const totalComDesconto = totalBruto - parseFloat(discount || 0);
 
-    if (!itens.length) {
-      setMensagem("❌ Adicione ao menos um item à venda.");
+  const finalizarVenda = () => {
+    if (!selectedCustomer || items.length === 0) {
+      setError("Selecione um cliente e adicione pelo menos um item.");
       return;
     }
 
     const venda = {
-      timestamp: new Date().toISOString(),
-      totalAmount: total,
-      discount: parseFloat(desconto || 0),
-      paymentMethod: metodoPagamento,
+      customerId: parseInt(selectedCustomer),
+      employeeId: 1, // Substituir pelo ID real do funcionário
+      discount: parseFloat(discount || 0),
+      totalAmount: totalComDesconto,
+      paymentMethod: mapearMetodoPagamento(paymentMethod),
       status: "COMPLETED",
-      customerId: parseInt(clienteId),
-      employeeId: 1, // deve vir do usuário logado idealmente
-      observacao,
+      items: items.map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        unitPrice: item.price,
+      })),
     };
 
-    try {
-      const vendaRes = await fetch("http://localhost:8080/sales", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(venda),
+    axios
+      .post("http://localhost:8080/api/sales", venda)
+      .then(() => {
+        alert("Venda finalizada com sucesso!");
+        setSelectedCustomer("");
+        setSelectedProduct("");
+        setQuantity(1);
+        setItems([]);
+        setDiscount(0);
+        setObservation("");
+        setError("");
+      })
+      .catch((err) => {
+        console.error("Erro ao finalizar venda:", err);
+        alert("Erro ao finalizar a venda.");
       });
-
-      if (!vendaRes.ok) throw new Error("Erro ao registrar venda.");
-      const vendaCriada = await vendaRes.json();
-
-      for (const item of itens) {
-        const saleItem = {
-          quantity: item.quantidade,
-          unitPrice: item.unitPrice,
-          subtotal: item.subtotal,
-          saleId: vendaCriada.id,
-          productId: item.produtoId
-        };
-
-        const itemRes = await fetch("http://localhost:8080/sale-item", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(saleItem),
-        });
-
-        if (!itemRes.ok) throw new Error("Erro ao registrar item da venda.");
-      }
-
-      setMensagem("✅ Venda registrada com sucesso!");
-      setItens([]);
-      setClienteId("");
-      setProdutoId("");
-      setQuantidade(1);
-      setTotal(0);
-      setObservacao("");
-      setDesconto(0);
-    } catch (err) {
-      setMensagem("❌ " + err.message);
-    }
   };
 
   return (
-    <div>
+    <div className="form-container">
       <header>
-        <h1>Registro de Vendas</h1>
+        <h1>Cadastro de Venda</h1>
       </header>
       <Menu />
-      <main>
-        <section>
-          <h2>Dados da Venda</h2>
 
-          <label>Cliente:</label>
-          <select value={clienteId} onChange={(e) => setClienteId(e.target.value)}>
-            <option value="">Selecione um cliente</option>
-            {clientes.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select><br /><br />
+      <form onSubmit={(e) => e.preventDefault()}>
+        <label>Cliente:</label>
+        <select
+          className="form-select"
+          value={selectedCustomer}
+          onChange={(e) => setSelectedCustomer(e.target.value)}
+        >
+          <option value="">Selecione um cliente</option>
+          {customers.map((customer) => (
+            <option key={customer.id} value={customer.id}>
+              {customer.name}
+            </option>
+          ))}
+        </select>
 
-          <label>Produto:</label>
-          <select value={produtoId} onChange={(e) => setProdutoId(e.target.value)}>
-            <option value="">Selecione um produto</option>
-            {produtos.map((p) => (
-              <option key={p.id} value={p.id}>{p.name} - R$ {p.price.toFixed(2)}</option>
-            ))}
-          </select>
+        <label>Produto:</label>
+        <select
+          className="form-select"
+          value={selectedProduct}
+          onChange={(e) => setSelectedProduct(e.target.value)}
+        >
+          <option value="">Selecione um produto</option>
+          {products.map((product) => (
+            <option key={product.id} value={product.id}>
+              {product.name}
+            </option>
+          ))}
+        </select>
 
-          <label> Quantidade: </label>
-          <input type="number" min="1" value={quantidade} onChange={(e) => setQuantidade(parseInt(e.target.value))} />
+        <label>Quantidade:</label>
+        <input
+          className="form-control"
+          type="number"
+          value={quantity}
+          min={1}
+          onChange={(e) => setQuantity(e.target.value)}
+        />
 
-          <button type="button" onClick={adicionarProduto}>Adicionar Produto</button>
-        </section>
+        <button
+          type="button"
+          className="btn btn-success mt-2"
+          onClick={adicionarProduto}
+        >
+          Adicionar Produto
+        </button>
 
-        <section>
-          <h2>Itens da Venda</h2>
-          <ul>
-            {itens.map((item, idx) => (
-              <li key={idx}>
-                {item.quantidade}x {item.nome} - R$ {item.subtotal.toFixed(2)}
-                <button onClick={() => removerItem(item.produtoId)}>Remover</button>
+        <h2 className="mt-4">Itens da Venda</h2>
+        <ul>
+          {items.map((item, index) => {
+            const prod = products.find((p) => p.id === item.productId);
+            return (
+              <li key={index}>
+                {prod?.name || "Produto"} - {item.quantity} x R${" "}
+                {(item.price || 0).toFixed(2)}
               </li>
-            ))}
-          </ul>
+            );
+          })}
+        </ul>
 
-          <p>Total bruto: R$ {itens.reduce((soma, i) => soma + i.subtotal, 0).toFixed(2)}</p>
+        <p>Total bruto: R$ {totalBruto.toFixed(2)}</p>
 
-          <label>Desconto:</label>
-          <input type="number" min="0" value={desconto} onChange={(e) => setDesconto(e.target.value)} />
+        <label>Desconto:</label>
+        <input
+          className="form-control"
+          type="number"
+          value={discount}
+          onChange={(e) => setDiscount(e.target.value)}
+        />
 
-          <p><strong>Total com desconto: R$ {total.toFixed(2)}</strong></p>
+        <p>Total com desconto: R$ {totalComDesconto.toFixed(2)}</p>
 
-          <label>Método de Pagamento:</label>
-          <select value={metodoPagamento} onChange={(e) => setMetodoPagamento(e.target.value)}>
-            <option value="CREDIT_CARD">Cartão de Crédito</option>
-            <option value="DEBIT_CARD">Cartão de Débito</option>
-            <option value="PIX">PIX</option>
-            <option value="CASH">Dinheiro</option>
-          </select><br /><br />
+        <label>Método de Pagamento:</label>
+        <select
+          className="form-select"
+          value={paymentMethod}
+          onChange={(e) => setPaymentMethod(e.target.value)}
+        >
+          <option value="Cartão de Crédito">Cartão de Crédito</option>
+          <option value="Cartão de Débito">Cartão de Débito</option>
+          <option value="Dinheiro">Dinheiro</option>
+        </select>
 
-          <label>Observação:</label><br />
-          <textarea value={observacao} onChange={(e) => setObservacao(e.target.value)} rows="4" cols="50"></textarea><br /><br />
+        <label>Observação:</label>
+        <textarea
+          className="form-control"
+          value={observation}
+          onChange={(e) => setObservation(e.target.value)}
+        ></textarea>
 
-          <button onClick={finalizarVenda}>Finalizar Venda</button>
-          {mensagem && <p style={{ color: mensagem.startsWith("✅") ? "green" : "red", fontWeight: 'bold' }}>{mensagem}</p>}
-        </section>
-      </main>
+        <button
+          type="button"
+          className="btn btn-primary mt-3"
+          onClick={finalizarVenda}
+        >
+          Finalizar Venda
+        </button>
+
+        {error && <p className="text-danger mt-3">{error}</p>}
+      </form>
     </div>
   );
 }
