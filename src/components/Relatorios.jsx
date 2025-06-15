@@ -91,27 +91,6 @@ export default function TelaRelatorios() {
         )}
 
         <section>
-          <h2>Cadastro de Produto</h2>
-          <form onSubmit={cadastrarProduto}>
-            <input type="text" name="name" placeholder="Nome" value={novoProduto.name} onChange={handleProdutoChange} required />
-            <input type="text" name="description" placeholder="Descrição" value={novoProduto.description} onChange={handleProdutoChange} />
-            <input type="text" name="barcode" placeholder="Código de Barras" value={novoProduto.barcode} onChange={handleProdutoChange} />
-            <input type="number" name="cost" placeholder="Custo" step="0.01" value={novoProduto.cost} onChange={handleProdutoChange} required />
-            <input type="number" name="price" placeholder="Preço" step="0.01" value={novoProduto.price} onChange={handleProdutoChange} required />
-            <input type="number" name="minStock" placeholder="Estoque Mínimo" value={novoProduto.minStock} onChange={handleProdutoChange} required />
-            <input type="number" name="stock" placeholder="Estoque Atual" value={novoProduto.stock} onChange={handleProdutoChange} required />
-            <input type="number" name="categoryId" placeholder="ID da Categoria" value={novoProduto.categoryId} onChange={handleProdutoChange} required />
-            <label>
-              Ativo:
-              <input type="checkbox" name="isActive" checked={novoProduto.isActive} onChange={handleProdutoChange} />
-            </label>
-            <button type="submit">Cadastrar Produto</button>
-          </form>
-        </section>
-
-        <br />
-
-        <section>
           <h2>Relatório de Serviços</h2>
           <table border="1" cellPadding="5">
             <thead>

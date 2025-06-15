@@ -78,7 +78,6 @@ export default function CadastroServicosProdutos() {
         <input name="name" placeholder="Nome" onChange={handleServiceChange} required />
         <input name="basePrice" placeholder="Preço base" type="number" onChange={handleServiceChange} required />
         <input name="duration" placeholder="Duração (min)" type="number" onChange={handleServiceChange} required />
-        <input name="description" placeholder="Descrição" onChange={handleServiceChange} required />
         <label>
           Ativo?
           <input type="checkbox" checked={serviceType.isActive} onChange={(e) => setServiceType({ ...serviceType, isActive: e.target.checked })} />
@@ -96,6 +95,7 @@ export default function CadastroServicosProdutos() {
         <input name="cost" placeholder="Custo" type="number" onChange={handleProductChange} required />
         <input name="stock" placeholder="Estoque" type="number" onChange={handleProductChange} required />
         <input name="minStock" placeholder="Estoque mínimo" type="number" onChange={handleProductChange} required />
+        <input name="barcode" placeholder="Código de barras" onChange={handleProductChange} required />
         <input name="categoryId" placeholder="ID da categoria" type="number" onChange={handleProductChange} required />
         <label>
           Ativo?

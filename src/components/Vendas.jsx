@@ -17,33 +17,32 @@ export default function Vendas() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/customers")
+    axios.get("http://localhost:8080/api/customers")
       .then((res) => {
         const lista = res.data._embedded?.customResourceList || [];
         setCustomers(lista.map((item) => item.content || item));
       })
       .catch((err) => {
         console.error("Erro ao buscar clientes:", err);
-        setError("Erro ao carregar dados de clientes.");
+        setError("Erro ao carregar clientes.");
       });
 
-    axios
-      .get("http://localhost:8080/api/products")
+    axios.get("http://localhost:8080/api/products")
       .then((res) => {
         const lista = res.data._embedded?.customResourceList || [];
         setProducts(lista.map((item) => item.content || item));
       })
       .catch((err) => {
         console.error("Erro ao buscar produtos:", err);
-        setError("Erro ao carregar dados de produtos.");
+        setError("Erro ao carregar produtos.");
       });
   }, []);
 
   const adicionarProduto = () => {
     const produto = products.find((p) => String(p.id) === selectedProduct);
+
     if (!produto || quantity <= 0) {
-      setError("Produto inválido ou quantidade inválida.");
+      setError("Selecione um produto válido e informe uma quantidade maior que zero.");
       return;
     }
 
@@ -59,6 +58,12 @@ export default function Vendas() {
     setError("");
   };
 
+  const removerItem = (index) => {
+    const novaLista = [...items];
+    novaLista.splice(index, 1);
+    setItems(novaLista);
+  };
+
   function mapearMetodoPagamento(metodo) {
     switch (metodo) {
       case "Cartão de Crédito":
@@ -72,21 +77,18 @@ export default function Vendas() {
     }
   }
 
-  const totalBruto = items.reduce(
-    (acc, item) => acc + (item.price || 0) * (item.quantity || 0),
-    0
-  );
+  const totalBruto = items.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 0), 0);
   const totalComDesconto = totalBruto - parseFloat(discount || 0);
 
   const finalizarVenda = () => {
     if (!selectedCustomer || items.length === 0) {
-      setError("Selecione um cliente e adicione pelo menos um item.");
+      setError("Selecione um cliente e adicione ao menos um produto.");
       return;
     }
 
     const venda = {
       customerId: parseInt(selectedCustomer),
-      employeeId: 1, // Substituir pelo ID real do funcionário
+      employeeId: 1,
       discount: parseFloat(discount || 0),
       totalAmount: totalComDesconto,
       paymentMethod: mapearMetodoPagamento(paymentMethod),
@@ -96,10 +98,10 @@ export default function Vendas() {
         quantity: item.quantity,
         unitPrice: item.price,
       })),
+      observation: observation,
     };
 
-    axios
-      .post("http://localhost:8080/api/sales", venda)
+    axios.post("http://localhost:8080/api/sales", venda)
       .then(() => {
         alert("Venda finalizada com sucesso!");
         setSelectedCustomer("");
@@ -112,7 +114,7 @@ export default function Vendas() {
       })
       .catch((err) => {
         console.error("Erro ao finalizar venda:", err);
-        alert("Erro ao finalizar a venda.");
+        alert("Erro ao finalizar a venda. Verifique os dados.");
       });
   };
 
@@ -156,31 +158,53 @@ export default function Vendas() {
         <input
           className="form-control"
           type="number"
-          value={quantity}
           min={1}
+          value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
         />
 
-        <button
-          type="button"
-          className="btn btn-success mt-2"
-          onClick={adicionarProduto}
-        >
+        <button type="button" className="btn btn-success mt-2" onClick={adicionarProduto}>
           Adicionar Produto
         </button>
 
-        <h2 className="mt-4">Itens da Venda</h2>
-        <ul>
-          {items.map((item, index) => {
-            const prod = products.find((p) => p.id === item.productId);
-            return (
-              <li key={index}>
-                {prod?.name || "Produto"} - {item.quantity} x R${" "}
-                {(item.price || 0).toFixed(2)}
-              </li>
-            );
-          })}
-        </ul>
+        {items.length > 0 && (
+          <>
+            <h2 className="mt-4">Itens da Venda</h2>
+            <table className="table table-bordered mt-2">
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Quantidade</th>
+                  <th>Preço Unitário</th>
+                  <th>Total</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item, index) => {
+                  const prod = products.find((p) => p.id === item.productId);
+                  return (
+                    <tr key={index}>
+                      <td>{prod?.name || "Produto"}</td>
+                      <td>{item.quantity}</td>
+                      <td>R$ {item.price.toFixed(2)}</td>
+                      <td>R$ {(item.price * item.quantity).toFixed(2)}</td>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn btn-danger btn-sm"
+                          onClick={() => removerItem(index)}
+                        >
+                          Remover
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </>
+        )}
 
         <p>Total bruto: R$ {totalBruto.toFixed(2)}</p>
 
