@@ -6,6 +6,7 @@ export default function Agendamentos() {
   const [customers, setCustomers] = useState([]);
   const [pets, setPets] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [allPets, setAllPets] = useState([]);
 
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [selectedPet, setSelectedPet] = useState("");
@@ -16,39 +17,49 @@ export default function Agendamentos() {
   const [price, setPrice] = useState("");
   const [serviceTypes, setServiceTypes] = useState([]);
 
-
   useEffect(() => {
-    axios.get("http://localhost:8080/api/service-types")
-    .then((res) => {
-      const lista = res.data._embedded?.customResourceList || [];
-      setServiceTypes(lista.map(item => item.content || item));
-      })
-    .catch((err) => console.error("Erro ao buscar tipos de serviço:", err));
+    axios.get("http://localhost:8080/service-types")
+      .then((res) => setServiceTypes(res.data))
+      .catch((err) => console.error("Erro ao buscar tipos de serviço:", err));
 
-    axios.get("http://localhost:8080/api/customers")
-      .then((res) => {
-        const lista = res.data._embedded?.customResourceList || [];
-        setCustomers(lista.map(item => item.content || item));
-      })
+    axios.get("http://localhost:8080/customers")
+      .then((res) => setCustomers(res.data))
       .catch((err) => console.error("Erro ao buscar clientes:", err));
 
-    axios.get("http://localhost:8080/api/pets")
+    axios.get("http://localhost:8080/pets")
       .then((res) => {
-        const lista = res.data._embedded?.customResourceList || [];
-        setPets(lista.map(item => item.content || item));
+        setAllPets(res.data);
       })
       .catch((err) => console.error("Erro ao buscar pets:", err));
 
-    axios.get("http://localhost:8080/api/employees")
-      .then((res) => {
-        const lista = res.data._embedded?.customResourceList || [];
-        setEmployees(lista.map(item => item.content || item));
-      })
+    axios.get("http://localhost:8080/employees")
+      .then((res) => setEmployees(res.data))
       .catch((err) => console.error("Erro ao buscar funcionários:", err));
   }, []);
 
+  useEffect(() => {
+    if (selectedCustomer) {
+      const petsFiltrados = allPets.filter(pet => pet.customerId === parseInt(selectedCustomer));
+      setPets(petsFiltrados);
+    } else {
+      setPets([]);
+    }
+  }, [selectedCustomer, allPets]);
+
+useEffect(() => {
+  const tipoSelecionado = serviceTypes.find(s => String(s.id) === serviceTypeId);
+  if (tipoSelecionado) {
+    setPrice(tipoSelecionado.price);
+  } else {
+    setPrice("");
+  }
+}, [serviceTypeId, serviceTypes]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const cliente = customers.find(c => String(c.id) === selectedCustomer);
+    const servico = serviceTypes.find(s => String(s.id) === serviceTypeId);
 
     const agendamento = {
       timestamp: datetime,
@@ -56,10 +67,13 @@ export default function Agendamentos() {
       description,
       serviceTypeId: parseInt(serviceTypeId),
       petId: parseInt(selectedPet),
-      employeeId: parseInt(selectedEmployee)
+      employeeId: parseInt(selectedEmployee),
+      customerName: cliente?.name || "",
+      serviceName: servico?.name || "",
+      status: "AGENDADO"
     };
 
-    axios.post("http://localhost:8080/api/service-records", agendamento)
+    axios.post("http://localhost:8080/schedules", agendamento)
       .then(() => alert("Agendamento realizado com sucesso!"))
       .catch((err) => {
         console.error("Erro ao agendar:", err);
@@ -131,7 +145,6 @@ export default function Agendamentos() {
           ))}
         </select>
 
-
         <label>Data e Hora:</label>
         <input
           className="form-control"
@@ -153,7 +166,9 @@ export default function Agendamentos() {
           className="form-control"
           type="number"
           value={price}
-          onChange={(e) => setPrice(e.target.value)}
+          disabled
+          readOnly
+          style={{ backgroundColor: "#fff", color: "#000", fontWeight: "bold" }}
         />
 
         <button type="submit" className="btn btn-primary mt-3">Agendar</button>

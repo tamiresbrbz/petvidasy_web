@@ -57,25 +57,27 @@ export default function TelaRelatorios() {
     }
   };
 
-  useEffect(() => {
-    async function carregarRelatorios() {
-      try {
-        const [servicosRes, agendamentosRes, vendasRes] = await Promise.all([
-          axios.get("http://localhost:8080/api/services"),
-          axios.get("http://localhost:8080/api/schedules"),
-          axios.get("http://localhost:8080/api/sales")
-        ]);
+ useEffect(() => {
+  async function carregarRelatorios() {
+    try {
+      const [servicosRes, agendamentosRes, vendasRes] = await Promise.all([
+        axios.get("http://localhost:8080/service-types"),
+        axios.get("http://localhost:8080/schedules"),
+        axios.get("http://localhost:8080/sales")
+      ]);
 
-        setRelatorioServicos(servicosRes.data);
-        setRelatorioAgendamentos(agendamentosRes.data);
-        setRelatorioVendas(vendasRes.data);
-      } catch (err) {
-        setMensagem("❌ " + err.message);
-      }
+      setRelatorioServicos(servicosRes.data);
+      setRelatorioAgendamentos(agendamentosRes.data);
+      setRelatorioVendas(vendasRes.data);
+    } catch (err) {
+      setMensagem("❌ Erro ao carregar relatórios: " + err.message);
+      console.error(err);
     }
+  }
 
-    carregarRelatorios();
-  }, []);
+  carregarRelatorios();
+}, []);
+
 
   return (
     <div>
@@ -134,7 +136,7 @@ export default function TelaRelatorios() {
                   <td>{agendamento.id}</td>
                   <td>{agendamento.customerName}</td>
                   <td>{agendamento.serviceName}</td>
-                  <td>{new Date(agendamento.date).toLocaleString()}</td>
+                  <td>{new Date(agendamento.timestamp).toLocaleString()}</td>
                   <td>{agendamento.status}</td>
                 </tr>
               ))}

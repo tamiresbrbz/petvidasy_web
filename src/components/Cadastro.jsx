@@ -25,50 +25,50 @@ function Cadastro() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const clienteResponse = await axios.post('http://localhost:8080/api/customers', {
-      name: formData.nomeTutor,
-      phone: formData.telefoneTutor,
-      email: formData.emailTutor,
-      cpf: formData.cpfTutor.replace(/\D/g, ''), // CPF sem formatação
-    });
+    try {
+      // ✅ POST para cadastrar o tutor no json-server
+      const clienteResponse = await axios.post('http://localhost:8080/customers', {
+        name: formData.nomeTutor,
+        phone: formData.telefoneTutor,
+        email: formData.emailTutor,
+        cpf: formData.cpfTutor.replace(/\D/g, '') // Remove pontos e traço
+      });
 
-    const clienteId = clienteResponse.data.id;
+      const clienteId = clienteResponse.data.id;
 
-    await axios.post('http://localhost:8080/api/pets', {
-      name: formData.nomePet,
-      breed: formData.racaPet,
-      weight: parseFloat(formData.pesoPet || 0),
-      specialNeeds: formData.necessidadesEspeciais,
-      birthDate: formData.dataNascimentoPet,
-      customerId: clienteId
-    });
+      // ✅ POST para cadastrar o pet vinculado ao tutor
+      await axios.post('http://localhost:8080/pets', {
+        name: formData.nomePet,
+        breed: formData.racaPet,
+        weight: parseFloat(formData.pesoPet || 0),
+        specialNeeds: formData.necessidadesEspeciais,
+        birthDate: formData.dataNascimentoPet,
+        customerId: clienteId
+      });
 
-    setMensagem('✅ Cadastro realizado com sucesso!');
-    alert('Cadastro realizado com sucesso!');
+      setMensagem('✅ Cadastro realizado com sucesso!');
+      alert('Cadastro realizado com sucesso!');
 
-    // Limpa o formulário
-    setFormData({
-      nomeTutor: '',
-      telefoneTutor: '',
-      emailTutor: '',
-      cpfTutor: '',
-      nomePet: '',
-      racaPet: '',
-      pesoPet: '',
-      necessidadesEspeciais: '',
-      dataNascimentoPet: ''
-    });
+      setFormData({
+        nomeTutor: '',
+        telefoneTutor: '',
+        emailTutor: '',
+        cpfTutor: '',
+        nomePet: '',
+        racaPet: '',
+        pesoPet: '',
+        necessidadesEspeciais: '',
+        dataNascimentoPet: ''
+      });
 
-    // NÃO redireciona
-  } catch (error) {
-    console.error(error);
-    setMensagem('❌ Erro ao realizar cadastro. Verifique os dados e tente novamente.');
-  }
-};
+    } catch (error) {
+      console.error(error);
+      setMensagem('❌ Erro ao realizar cadastro. Verifique os dados e tente novamente.');
+    }
+  };
 
   return (
     <div>

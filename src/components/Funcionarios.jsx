@@ -23,7 +23,7 @@ export default function Funcionarios() {
   e.preventDefault();
   console.log("Enviando funcionário:", formData);
 
-  axios.post('http://localhost:8080/api/employees', formData)
+  axios.post('http://localhost:8080/employees', formData)
     .then(response => {
       alert('Funcionário cadastrado com sucesso!');
       console.log(response.data);

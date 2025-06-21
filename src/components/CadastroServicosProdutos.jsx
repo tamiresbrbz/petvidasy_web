@@ -36,9 +36,9 @@ export default function CadastroServicosProdutos() {
   const cadastrarTipoServico = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/api/service-types", {
+      await axios.post("http://localhost:8080/service-types", {
         ...serviceType,
-        basePrice: parseFloat(serviceType.basePrice),
+        price: parseFloat(serviceType.basePrice),
         duration: parseInt(serviceType.duration),
       });
       alert("Tipo de serviço cadastrado com sucesso!");
@@ -51,7 +51,7 @@ export default function CadastroServicosProdutos() {
   const cadastrarProduto = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/api/products", {
+      await axios.post("http://localhost:8080/products", {
         ...product,
         price: parseFloat(product.price),
         cost: parseFloat(product.cost),

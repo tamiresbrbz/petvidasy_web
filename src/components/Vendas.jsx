@@ -13,25 +13,18 @@ export default function Vendas() {
   const [discount, setDiscount] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("Cartão de Crédito");
   const [observation, setObservation] = useState("");
-
   const [error, setError] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:8080/api/customers")
-      .then((res) => {
-        const lista = res.data._embedded?.customResourceList || [];
-        setCustomers(lista.map((item) => item.content || item));
-      })
+    axios.get("http://localhost:8080/customers")
+      .then((res) => setCustomers(res.data))
       .catch((err) => {
         console.error("Erro ao buscar clientes:", err);
         setError("Erro ao carregar clientes.");
       });
 
-    axios.get("http://localhost:8080/api/products")
-      .then((res) => {
-        const lista = res.data._embedded?.customResourceList || [];
-        setProducts(lista.map((item) => item.content || item));
-      })
+    axios.get("http://localhost:8080/products")
+      .then((res) => setProducts(res.data))
       .catch((err) => {
         console.error("Erro ao buscar produtos:", err);
         setError("Erro ao carregar produtos.");
@@ -40,7 +33,6 @@ export default function Vendas() {
 
   const adicionarProduto = () => {
     const produto = products.find((p) => String(p.id) === selectedProduct);
-
     if (!produto || quantity <= 0) {
       setError("Selecione um produto válido e informe uma quantidade maior que zero.");
       return;
@@ -49,7 +41,7 @@ export default function Vendas() {
     const novoItem = {
       productId: produto.id,
       quantity: parseInt(quantity),
-      price: produto.price || 0,
+      price: produto.price ?? 0
     };
 
     setItems([...items, novoItem]);
@@ -77,7 +69,7 @@ export default function Vendas() {
     }
   }
 
-  const totalBruto = items.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 0), 0);
+  const totalBruto = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const totalComDesconto = totalBruto - parseFloat(discount || 0);
 
   const finalizarVenda = () => {
@@ -88,7 +80,6 @@ export default function Vendas() {
 
     const venda = {
       customerId: parseInt(selectedCustomer),
-      employeeId: 1,
       discount: parseFloat(discount || 0),
       totalAmount: totalComDesconto,
       paymentMethod: mapearMetodoPagamento(paymentMethod),
@@ -96,14 +87,14 @@ export default function Vendas() {
       items: items.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
-        unitPrice: item.price,
+        unitPrice: item.price
       })),
-      observation: observation,
+      observation
     };
 
-    axios.post("http://localhost:8080/api/sales", venda)
+    axios.post("http://localhost:8080/sales", venda)
       .then(() => {
-        alert("Venda finalizada com sucesso!");
+        alert("Venda registrada com sucesso!");
         setSelectedCustomer("");
         setSelectedProduct("");
         setQuantity(1);
@@ -113,8 +104,8 @@ export default function Vendas() {
         setError("");
       })
       .catch((err) => {
-        console.error("Erro ao finalizar venda:", err);
-        alert("Erro ao finalizar a venda. Verifique os dados.");
+        console.error("Erro ao registrar venda:", err);
+        alert("Erro ao finalizar a venda.");
       });
   };
 

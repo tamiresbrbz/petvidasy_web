@@ -1,3 +1,296 @@
 {
-  "animais": []
+  "customers": [
+    {
+      "id": "1",
+      "name": "Ana Cliente",
+      "phone": "(11) 99999-1234",
+      "email": "ana@email.com",
+      "cpf": "12345678900"
+    },
+    {
+      "id": "2",
+      "name": "Carlos Pet",
+      "phone": "(11) 98888-5678",
+      "email": "carlos@email.com",
+      "cpf": "98765432100"
+    },
+    {
+      "id": "3",
+      "name": "Fernanda Dono",
+      "phone": "(11) 97777-3456",
+      "email": "fernanda@email.com",
+      "cpf": "11122233344"
+    },
+    {
+      "id": "ecad",
+      "name": "Juliana Teles de Oliveira Soares",
+      "phone": "(11) 98591-1015",
+      "email": "jtelessoares.jt@gmail.com",
+      "cpf": "11111111111"
+    },
+    {
+      "id": "ca50",
+      "name": "Sofia",
+      "phone": "(11) 98591-1015",
+      "email": "jtelessoares.jt@gmail.com",
+      "cpf": "11111111111"
+    },
+    {
+      "id": "da77",
+      "name": "Henrique",
+      "phone": "(11) 99859-3963",
+      "email": "henrique@gmail.com",
+      "cpf": "11111111111"
+    }
+  ],
+  "employees": [
+    {
+      "id": "1",
+      "username": "admin1",
+      "password": "senha123",
+      "email": "admin1@empresa.com",
+      "role": "ADMIN",
+      "isActive": true
+    },
+    {
+      "id": "2",
+      "username": "admin2",
+      "password": "seguro456",
+      "email": "admin2@empresa.com",
+      "role": "ADMIN",
+      "isActive": true
+    },
+    {
+      "id": "6f47",
+      "username": "Juliana Teles de Oliveira Soares",
+      "password": "123456",
+      "email": "jtelessoares.jt@gmail.com",
+      "role": "ADMIN",
+      "isActive": true
+    }
+  ],
+  "pets": [
+    {
+      "id": "1",
+      "name": "Rex",
+      "breed": "Labrador",
+      "weight": 30,
+      "specialNeeds": "",
+      "birthDate": "2020-06-01",
+      "customerId": 1
+    },
+    {
+      "id": "2",
+      "name": "Mia",
+      "breed": "Persa",
+      "weight": 4.5,
+      "specialNeeds": "Alergia a ração comum",
+      "birthDate": "2021-10-10",
+      "customerId": 2
+    },
+    {
+      "id": "9cd5",
+      "name": "Bilu",
+      "breed": "Vira",
+      "weight": 10,
+      "specialNeeds": "nao",
+      "birthDate": "2025-06-03",
+      "customerId": "ecad"
+    },
+    {
+      "id": "9683",
+      "name": "Cachorro",
+      "breed": "York",
+      "weight": 8,
+      "specialNeeds": "nao",
+      "birthDate": "2025-06-04",
+      "customerId": "ca50"
+    },
+    {
+      "id": "446d",
+      "name": "Theo",
+      "breed": "York",
+      "weight": 80,
+      "specialNeeds": "Não",
+      "birthDate": "2025-06-01",
+      "customerId": "da77"
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "name": "Banho",
+      "price": 50
+    },
+    {
+      "id": "2",
+      "name": "Tosa",
+      "price": 60
+    },
+    {
+      "id": "3",
+      "name": "Consulta Veterinária",
+      "price": 100
+    }
+  ],
+  "sales": [
+    {
+      "id": "7aea",
+      "customerId": 2,
+      "discount": 10,
+      "totalAmount": 230,
+      "paymentMethod": "CREDIT_CARD",
+      "status": "COMPLETED",
+      "items": [
+        {
+          "productId": 2,
+          "quantity": 4,
+          "unitPrice": 60
+        }
+      ],
+      "observation": ""
+    },
+    {
+      "id": "737c",
+      "customerId": null,
+      "discount": 70,
+      "totalAmount": 30,
+      "paymentMethod": "CREDIT_CARD",
+      "status": "COMPLETED",
+      "items": [
+        {
+          "productId": 3,
+          "quantity": 1,
+          "unitPrice": 100
+        }
+      ],
+      "observation": ""
+    },
+    {
+      "id": "f92e",
+      "customerId": 1,
+      "discount": 10,
+      "totalAmount": 40,
+      "paymentMethod": "DEBIT_CARD",
+      "status": "COMPLETED",
+      "items": [
+        {
+          "productId": 1,
+          "quantity": 1,
+          "unitPrice": 50
+        }
+      ],
+      "observation": ""
+    },
+    {
+      "id": "f9ae",
+      "customerId": 3,
+      "discount": 5,
+      "totalAmount": 55,
+      "paymentMethod": "CREDIT_CARD",
+      "status": "COMPLETED",
+      "items": [
+        {
+          "productId": 2,
+          "quantity": 1,
+          "unitPrice": 60
+        }
+      ],
+      "observation": ""
+    }
+  ],
+  "service-types": [
+    {
+      "id": "1",
+      "name": "Banho",
+      "description": "Banho completo com shampoo especial",
+      "price": 50
+    },
+    {
+      "id": "2",
+      "name": "Tosa",
+      "description": "Tosa padrão ou personalizada",
+      "price": 60
+    },
+    {
+      "id": "3",
+      "name": "Consulta",
+      "description": "Consulta com veterinário especializado",
+      "price": 100
+    },
+    {
+      "id": "5025",
+      "name": "Corte de Unha",
+      "price": 30,
+      "duration": 30,
+      "description": "Corte de unha e esmaltação",
+      "isActive": true
+    }
+  ],
+  "schedules": [
+    {
+      "id": "1",
+      "customerName": "Ana Cliente",
+      "serviceName": "Banho",
+      "date": "2024-07-01T14:00:00",
+      "status": "AGENDADO"
+    },
+    {
+      "id": "2",
+      "customerName": "Carlos Pet",
+      "serviceName": "Tosa",
+      "date": "2024-07-02T10:30:00",
+      "status": "CONCLUÍDO"
+    },
+    {
+      "id": "3",
+      "customerName": "Juliana Teles de Oliveira Soares",
+      "serviceName": "Consulta",
+      "date": "2024-07-05T11:00:00",
+      "status": "CANCELADO"
+    },
+    {
+      "id": "18d9",
+      "customerName": "Carlos Pet",
+      "serviceName": "Banho",
+      "date": "2025-06-19T18:28",
+      "status": "AGENDADO"
+    },
+    {
+      "id": "ea5e",
+      "timestamp": "2025-06-27T18:50",
+      "customerName": "Carlos Pet",
+      "serviceName": "Banho",
+      "chargedPrice": 30,
+      "description": "Pequeno raivoso",
+      "serviceTypeId": 1,
+      "petId": 1,
+      "employeeId": 1,
+      "status": "AGENDADO"
+    },
+    {
+      "id": "7c01",
+      "timestamp": "2025-07-01T19:10",
+      "chargedPrice": 60,
+      "description": "Prenho",
+      "serviceTypeId": 2,
+      "petId": 1,
+      "employeeId": 1,
+      "customerName": "Ana Cliente",
+      "serviceName": "Tosa",
+      "status": "AGENDADO"
+    },
+    {
+      "id": "9e45",
+      "timestamp": "2025-06-23T19:22",
+      "chargedPrice": 50,
+      "description": "Banho completo do Rex",
+      "serviceTypeId": 1,
+      "petId": 1,
+      "employeeId": 1,
+      "customerName": "Ana Cliente",
+      "serviceName": "Banho",
+      "status": "AGENDADO"
+    }
+  ]
 }
