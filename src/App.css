@@ -8,7 +8,8 @@ body {
     background-repeat: no-repeat;
     background-position: center;
     min-height: 100vh;
-    max-width: 325vh;
+
+
 }
 
 /* Cabeçalho */
@@ -39,6 +40,7 @@ button {
     color: white;
     font-weight: bold;
     transition: background-color 0.2s, transform 0.1s;
+
 }
 
 button:hover {
@@ -153,20 +155,35 @@ th {
 /* Atalhos */
 .atalhos {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 1em;
-    flex-wrap: wrap;
+    max-width: 620px;
+    margin: 2em auto;
+}
+
+.atalhos a {
+    flex: 0 0 48%; /* cada botão ocupa ~50% do espaço, com gap ajustado */
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
 }
 
 .atalhos a button {
-    background-color: #298ecf;
-    border: none;
+    width: 100%;
+    max-width: 285px;
+    min-width: 220px;
     padding: 0.8em 1.5em;
     font-size: 1em;
+    border: none;
     border-radius: 8px;
     color: white;
+    background-color: #298ecf;
     cursor: pointer;
+    font-weight: bold;
     transition: background-color 0.3s;
+    box-sizing: border-box;
+    text-align: center;
 }
 
 .atalhos a button:hover {
