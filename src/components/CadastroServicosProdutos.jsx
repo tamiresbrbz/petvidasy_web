@@ -75,8 +75,11 @@ export default function CadastroServicosProdutos() {
       
       <form onSubmit={cadastrarTipoServico}>
         <h2>Cadastro de Tipo de Serviço</h2>
+        <label>Nome</label>
         <input name="name" placeholder="Nome" onChange={handleServiceChange} required />
+        <label>Preço base</label>
         <input name="basePrice" placeholder="Preço base" type="number" onChange={handleServiceChange} required />
+        <label>Duração</label>
         <input name="duration" placeholder="Duração (min)" type="number" onChange={handleServiceChange} required />
         <label>
           Ativo?
@@ -90,12 +93,19 @@ export default function CadastroServicosProdutos() {
       
       <form onSubmit={cadastrarProduto}>
         <h2>Cadastro de Produto</h2>
+        <label>Nome</label>
         <input name="name" placeholder="Nome" onChange={handleProductChange} required />
+        <label>Preço</label>
         <input name="price" placeholder="Preço" type="number" onChange={handleProductChange} required />
+        <label>Custo</label>
         <input name="cost" placeholder="Custo" type="number" onChange={handleProductChange} required />
+        <label>Estoque</label>
         <input name="stock" placeholder="Estoque" type="number" onChange={handleProductChange} required />
+        <label>Estoque mínimo</label>
         <input name="minStock" placeholder="Estoque mínimo" type="number" onChange={handleProductChange} required />
+        <label>Código de barras</label>
         <input name="barcode" placeholder="Código de barras" onChange={handleProductChange} required />
+        <label>ID da categoria</label>
         <input name="categoryId" placeholder="ID da categoria" type="number" onChange={handleProductChange} required />
         <label>
           Ativo?

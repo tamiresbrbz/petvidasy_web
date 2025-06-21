@@ -74,6 +74,7 @@ function Cadastro() {
     <div>
       <header>
         <h1>Cadastro de Tutor e Pet</h1>
+        <p>Utilize o formulário abaixo para cadastrar novos tutores e pets.</p>
       </header>
       <Menu />
       <main>

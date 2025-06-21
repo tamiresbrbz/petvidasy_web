@@ -83,6 +83,7 @@ export default function TelaRelatorios() {
     <div>
       <header>
         <h1>Relatórios</h1>
+        <p>Utilize os formulários abaixo para verificar relatórios diversos.</p>
       </header>
 
       <Menu />

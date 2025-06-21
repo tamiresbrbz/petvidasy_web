@@ -113,6 +113,7 @@ export default function Vendas() {
     <div className="form-container">
       <header>
         <h1>Cadastro de Venda</h1>
+        <p>Utilize o formulário abaixo para realizar uma venda.</p>
       </header>
       <Menu />
 

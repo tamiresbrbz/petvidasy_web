@@ -45,7 +45,8 @@ export default function Funcionarios() {
   return (
     <div>
       <header>
-        <h1>Cadastrar Funcionário</h1>
+        <h1>Cadastro de Funcionário</h1>
+        <p>Utilize o formulário abaixo para cadastrar novos funcionários.</p>
         <Menu />
       </header>
       <form onSubmit={handleSubmit}>

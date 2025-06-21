@@ -5,6 +5,7 @@ function Home() {
     <div>
       <header>
         <h1>PetVidaSys</h1>
+        <p>Para facilitar a administração do seu pet shop!</p>
       </header>
       <main>
         <div className="home-container">
